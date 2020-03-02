@@ -1,6 +1,5 @@
-import os, logging
+import logging
 import apache_beam as beam
-from apache_beam.io import ReadFromText
 from apache_beam.io import WriteToText
 
 class FormatDOBFn(beam.DoFn):
@@ -98,5 +97,5 @@ def run():
 
 
 if __name__ == '__main__':
-  logging.getLogger().setLevel(logging.INFO)
+  logging.getLogger().setLevel(logging.ERROR)
   run()

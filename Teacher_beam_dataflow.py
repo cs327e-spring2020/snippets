@@ -1,6 +1,10 @@
-import logging
+import datetime, logging
 import apache_beam as beam
 from apache_beam.io import WriteToText
+from apache_beam.pipeline import PipelineOptions
+from apache_beam.pipeline import Pipeline
+from apache_beam.options.pipeline_options import GoogleCloudOptions
+from apache_beam.options.pipeline_options import StandardOptions
 
 class StandardizeDoFn(beam.DoFn):
   def process(self, element):
@@ -45,16 +49,23 @@ class DedupRecordsDoFn(beam.DoFn):
 
 def run():
     PROJECT_ID = 'cs327e-sp2020' # change to your project id
+    BUCKET = 'gs://beam-output-data' # change to your bucket name
+    DIR_PATH = BUCKET + '/output/' + datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + '/'
 
-    # Project ID is required when using the BQ source
-    options = {
-     'project': PROJECT_ID
-    }
-        
-    opts = beam.pipeline.PipelineOptions(flags=[], **options)
-    
-    # Create beam pipeline using local runner
-    p = beam.Pipeline('DirectRunner', options=opts)
+    # Create and set your PipelineOptions.
+    options = PipelineOptions(flags=None)
+
+    # For Dataflow execution, set the project, job_name,
+    # staging location, temp_location and specify DataflowRunner.
+    google_cloud_options = options.view_as(GoogleCloudOptions)
+    google_cloud_options.project = PROJECT_ID
+    google_cloud_options.job_name = 'teacher-df'
+    google_cloud_options.staging_location = BUCKET + '/staging'
+    google_cloud_options.temp_location = BUCKET + '/temp'
+    options.view_as(StandardOptions).runner = 'DataflowRunner'
+
+    # Create the Pipeline with the specified options.
+    p = Pipeline(options=options)
 
     sql = 'SELECT tid, instructor, dept FROM college_modeled.Teacher limit 50'
     query_results = p | 'Read from BigQuery' >> beam.io.Read(beam.io.BigQuerySource(query=sql, use_standard_sql=True))
