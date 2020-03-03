@@ -71,7 +71,7 @@ def run():
      grouped_student_pcoll = formatted_dob_pcoll | 'Group by sid' >> beam.GroupByKey()
 
      # write PCollection to log file
-     #grouped_student_pcoll | 'Write log 2' >> WriteToText('grouped_student_pcoll.txt')
+     grouped_student_pcoll | 'Write log 2' >> WriteToText('grouped_student_pcoll.txt')
 
      # remove duplicate student records
      distinct_student_pcoll = grouped_student_pcoll | 'Dedup student records' >> beam.ParDo(DedupStudentRecordsFn())
