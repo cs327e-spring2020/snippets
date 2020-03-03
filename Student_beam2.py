@@ -89,8 +89,7 @@ def run():
                                                   schema=schema_id,
                                                   project=PROJECT_ID,
                                                   create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
-                                                  write_disposition=beam.io.BigQueryDisposition.WRITE_TRUNCATE,
-                                                  batch_size=int(100))
+                                                  write_disposition=beam.io.BigQueryDisposition.WRITE_TRUNCATE)
          
      result = p.run()
      result.wait_until_finish()      
