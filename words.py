@@ -19,7 +19,7 @@ def run():
 
      in_pcoll = p | beam.Create(['Hello Beam', 'This is awesome!'])
 
-     out_pcoll = in_pcoll | 'Multiply' >> beam.ParDo(SplitIntoWordsDoFn())
+     out_pcoll = in_pcoll | 'Split Words' >> beam.ParDo(SplitIntoWordsDoFn())
         
      out_pcoll | 'Write results' >> WriteToText('split_words.txt')
     
