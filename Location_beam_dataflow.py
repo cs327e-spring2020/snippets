@@ -84,7 +84,7 @@ def run():
     # staging location, temp_location and specify DataflowRunner.
     google_cloud_options = options.view_as(GoogleCloudOptions)
     google_cloud_options.project = PROJECT_ID
-    google_cloud_options.job_name = 'event'
+    google_cloud_options.job_name = 'location'
     google_cloud_options.staging_location = BUCKET + '/staging'
     google_cloud_options.temp_location = BUCKET + '/temp'
     options.view_as(StandardOptions).runner = 'DataflowRunner'
@@ -105,7 +105,7 @@ def run():
 
     dataset_id = 'covid_19_modeled'
     table_id = 'Location_Beam_DF'
-    schema_id = 'id:INTEGER,city:STRING,state:STRING,country:STRING,latitude:NUMERIC,longitude:NUMERIC,fips:INTEGER,admin:STRING,combined_key:STRING'
+    schema_id = 'id:INTEGER,city:STRING,state:STRING,country:STRING,latitude:NUMERIC,longitude:NUMERIC,fips:INTEGER,admin2:STRING,combined_key:STRING'
 
     # write PCollection to BQ table
     unique_pcoll | 'Write BQ table' >> beam.io.WriteToBigQuery(dataset=dataset_id, 

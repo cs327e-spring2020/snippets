@@ -93,7 +93,7 @@ def run():
 
      dataset_id = 'covid_19_modeled'
      table_id = 'Location_Beam'
-     schema_id = 'id:INTEGER,city:STRING,state:STRING,country:STRING,latitude:NUMERIC,longitude:NUMERIC,fips:INTEGER,admin:STRING,combined_key:STRING'
+     schema_id = 'id:INTEGER,city:STRING,state:STRING,country:STRING,latitude:NUMERIC,longitude:NUMERIC,fips:INTEGER,admin2:STRING,combined_key:STRING'
 
      # write PCollection to BQ table
      #unique_pcoll | 'Write BQ table' >> beam.io.WriteToBigQuery(dataset=dataset_id, 
