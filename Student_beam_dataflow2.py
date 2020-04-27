@@ -68,7 +68,7 @@ def run():
     # Create the Pipeline with the specified options.
     p = Pipeline(options=options)
 
-    sql = 'SELECT sid, fname, lname, dob, status FROM college_modeled.Student limit 50'
+    sql = 'SELECT sid, fname, lname, dob, status FROM college_workflow_modeled.Student'
     bq_source = beam.io.BigQuerySource(query=sql, use_standard_sql=True)
 
     query_results = p | 'Read from BigQuery' >> beam.io.Read(bq_source)
@@ -91,7 +91,7 @@ def run():
     # write PCollection to log file
     distinct_student_pcoll | 'Write log 3' >> WriteToText(DIR_PATH + 'distinct_student_pcoll.txt')
 
-    dataset_id = 'college_modeled'
+    dataset_id = 'college_workflow_modeled'
     table_id = 'Student_Beam_DF'
     schema_id = 'sid:STRING,fname:STRING,lname:STRING,dob:DATE,status:STRING'
 

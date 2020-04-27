@@ -47,11 +47,10 @@ def run():
     google_cloud_options.temp_location = BUCKET + '/temp'
     options.view_as(StandardOptions).runner = 'DataflowRunner'
 
-    # Create the Pipeline with the specified options.
     p = Pipeline(options=options)
 
-    takes_sql = 'SELECT sid, cno, grade FROM college_modeled.Takes'
-    class_sql = 'SELECT cid, cno FROM college_modeled.Class'
+    takes_sql = 'SELECT sid, cno, grade FROM college_workflow_modeled.Takes'
+    class_sql = 'SELECT cid, cno FROM college_workflow_modeled.Class'
 
     takes_pcoll = p | 'Read from BQ Takes' >> beam.io.Read(beam.io.BigQuerySource(query=takes_sql, use_standard_sql=True))
     class_pcoll = p | 'Read from BQ Class' >> beam.io.Read(beam.io.BigQuerySource(query=class_sql, use_standard_sql=True))
@@ -66,7 +65,7 @@ def run():
     # write PCollection to log file
     norm_takes_pcoll | 'Write log 3' >> WriteToText(DIR_PATH + 'norm_takes_pcoll.txt')
 
-    dataset_id = 'college_modeled'
+    dataset_id = 'college_workflow_modeled'
     table_id = 'Takes_Beam_DF'
     schema_id = 'sid:STRING,cid:STRING,grade:STRING'
 
