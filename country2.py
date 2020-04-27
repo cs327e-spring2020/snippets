@@ -1,0 +1,40 @@
+import datetime
+from airflow import models
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
+
+default_dag_args = {
+    # https://airflow.apache.org/faq.html#what-s-the-deal-with-start-date
+    'start_date': datetime.datetime(2020, 4, 27)
+}
+
+dataset = 'airflow'
+table = 'Country'
+
+query_cmd = 'bq query --use_legacy_sql=false '
+
+table_cmd = 'create or replace table ' + dataset + '.' + table + '(id int64, name string)' 
+
+insert_cmd = 'insert into ' + dataset + '.' + table + '(id, name) values(1, "\'"USA"\'")'
+
+
+with models.DAG(
+        'country2',
+        schedule_interval=None,
+        default_args=default_dag_args) as dag:
+
+    create_dataset = BashOperator(
+            task_id='create_dataset',
+            bash_command='bq --location=US mk --dataset ' + dataset)
+    
+    create_table = BashOperator(
+            task_id='create_table',
+            bash_command=query_cmd + "'" + table_cmd + "'",
+            trigger_rule='all_done')
+            
+    insert_row = BashOperator(
+            task_id='insert_row',
+            bash_command=query_cmd + "'" + insert_cmd + "'",
+            trigger_rule='one_success')
+        
+    create_dataset >> create_table >> insert_row
